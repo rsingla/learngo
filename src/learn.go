@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strconv"
+	"mathprog"
 )
 
 var i int = 27
@@ -15,6 +16,9 @@ func main() {
 	convert()
 	fmt.Println("--------")
 	mathfunc()
+	fmt.Println(mathprog.AddComplex())
+	fmt.Println(mathprog.SumComplex(1+2i, 2+3i))
+	fmt.Println(mathprog.SubtractComplex(4+4i, 2+3i))
 }
 
 var (
@@ -35,13 +39,18 @@ func movie() {
 }
 
 func mathfunc() {
-	a := 10
-	b := 3
+	a := 10 // 1010
+	b := 3  // 0011
 	fmt.Println(a + b)
 	fmt.Println(a - b)
 	fmt.Println(a * b)
-	fmt.Println(a / b)
+	fmt.Println(float32(a) / float32(b))
 	fmt.Println(a % b)
+	fmt.Println("--------")
+	fmt.Println(a & b)
+	fmt.Println(a | b)
+	fmt.Println(a ^ b)
+	fmt.Println(a &^ b)
 
 }
 
