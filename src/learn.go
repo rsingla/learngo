@@ -2,16 +2,16 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 	"mathprog"
+	"strconv"
 )
 
 var i int = 27
 
 func main() {
-	fmt.Printf("%v \n",i)
+	fmt.Printf("%v \n", i)
 	var i int = 47
-	fmt.Printf("%v \n",i)
+	fmt.Printf("%v \n", i)
 	movie()
 	convert()
 	fmt.Println("--------")
@@ -24,13 +24,11 @@ func main() {
 var (
 	actorName string = "Rozer stone"
 	companion string = "Sarah Jane Smith"
-	doctorNum int = 3
-	season int = 11
+	doctorNum int    = 3
+	season    int    = 11
 )
 
-
-
-func movie() { 
+func movie() {
 	fmt.Printf("%v, %T \n", actorName, actorName)
 	fmt.Printf("%v, %T \n", companion, companion)
 	fmt.Printf("%v, %T \n", doctorNum, doctorNum)
@@ -61,7 +59,6 @@ func convert() {
 	var sumfloat float64 = float64(sum)
 	fmt.Printf("%v, %T \n", sumfloat, sumfloat)
 
-
 	//Upper to Lower
 	var minus float64 = 22.90
 	fmt.Printf("%v, %T \n", minus, minus)
@@ -79,5 +76,5 @@ func convert() {
 	myvalstr := strconv.FormatFloat(myval, 'g', -1, 64)
 
 	fmt.Printf("%v, %T \n", myvalstr, myvalstr)
-	
+
 }

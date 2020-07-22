@@ -1,44 +1,35 @@
 package main
 
 import (
-	"net/http"
-	"log"
+	"calculator"
+	"encoding/json"
 	"fmt"
 	"html"
-	"encoding/json"
+	"log"
+	"net/http"
 )
 
-type User struct { 
-	Id    int     `json:"id"`
-	Name  string  `json:"name"`
-	Email string  `json:"email"`
-	Phone string  `json:"phone"`
-}
-
 func handler(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
+	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
 }
-
 
 func payoffHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(r)
-	fmt.Println(r.GetBody)
-	fmt.Println(r.Method)
+	fmt.Printf("%v, %T \n", r.Method, r.Method)
 	fmt.Println(r.Host)
 	fmt.Println(r.Header)
 
-	//fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
-	
-	w.Header().Set("Content-Type", "application/json") 
-      user := User {
-                    Id: 1, 
-                    Name: "John Doe", 
-                    Email: "johndoe@gmail.com", 
-                    Phone: "000099999"} 
-      
-     json.NewEncoder(w).Encode(user) 
-}
+	var trades []calculator.Tradeline
+	err := json.NewDecoder(r.Body).Decode(&trades)
 
+	fmt.Println(trades)
+	fmt.Println(err)
+
+	results := calculator.Calculate(trades)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(results)
+}
 
 func main() {
 	http.HandleFunc("/foo", handler)
@@ -53,8 +44,8 @@ func main() {
 		fmt.Println(r.Header)
 		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
 	})
-	
+
 	if err := http.ListenAndServe(":8080", nil); err != nil {
-        log.Fatal(err)
-    }
+		log.Fatal(err)
+	}
 }
