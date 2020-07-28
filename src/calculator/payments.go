@@ -1,5 +1,11 @@
 package calculator
 
+import (
+	"log"
+	"math"
+	"time"
+)
+
 const daysInYear = 365
 const monthlyDays = 30
 
@@ -7,16 +13,31 @@ func Amortization(trade Tradeline) []MonthlyPayment {
 
 	balance := trade.Balance
 	minimumPayment := trade.MinimumPayment
-	interestrate := trade.InterestRate / 100
-	if trade.InterestRate == 0.0 {
-		interestrate = Rate / 100
+
+	interestRate := trade.InterestRate
+	if math.IsNaN(interestRate) || interestRate == 0.00 {
+		interestRate = Rate
 	}
 
-	var monthlyPayments []MonthlyPayment
+	payoffT := payoffTime(interestRate, trade)
+
+	if math.IsNaN(payoffT) {
+		payoffT = 600
+	}
+
+	months := int(math.Ceil(payoffT))
+
+	normalizedRate := interestRate / 100
+
+	monthlyPayments := make([]MonthlyPayment, months)
 
 	month := 0
+
+	dailyPeriodicRate := normalizedRate / daysInYear
+
+	start := time.Now()
+
 	for balance > 0 {
-		dailyPeriodicRate := interestrate / daysInYear
 		dailyBalance := dailyPeriodicRate * balance
 		interest := dailyBalance * monthlyDays
 		principalPayment := 0.00
@@ -26,22 +47,29 @@ func Amortization(trade Tradeline) []MonthlyPayment {
 			principalPayment = minimumPayment - interest
 		}
 		balance = balance - principalPayment
-		month = month + 1
 		monthlyPayment := buildMonthlyPayment(interest, principalPayment, balance, trade, month)
-		monthlyPayments = append(monthlyPayments, monthlyPayment)
+		monthlyPayments[month] = *monthlyPayment
+
+		month = month + 1
+		if month >= 599 {
+			break
+		}
 	}
+
+	elapsed := time.Since(start)
+	log.Printf("Trade ID %s", trade.ID)
+	log.Printf("Amortization Binomial took %s", elapsed)
 
 	return monthlyPayments
 }
 
-func buildMonthlyPayment(interest float64, principalPayment float64, balance float64, trade Tradeline, month int) MonthlyPayment {
-
-	monthlyPayment := MonthlyPayment{
-		ID:               trade.ID,
-		Month:            month,
-		PrincipalPayment: float64(int(principalPayment*100)) / 100,
-		Interest:         float64(int(interest*100)) / 100,
-		RemainingBalance: float64(int(balance*100)) / 100}
+func buildMonthlyPayment(interest float64, principalPayment float64, balance float64, trade Tradeline, month int) *MonthlyPayment {
+	monthlyPayment := new(MonthlyPayment)
+	monthlyPayment.ID = trade.ID
+	monthlyPayment.Month = month
+	monthlyPayment.PrincipalPayment = principalPayment
+	monthlyPayment.Interest = interest
+	monthlyPayment.RemainingBalance = balance
 
 	return monthlyPayment
 }

@@ -1,46 +1,53 @@
 package calculator
 
 import (
+	"log"
 	"sync"
+	"time"
 )
 
-func AggregateAmortization(amortizationResults AmortizationResults) []PaymentTable {
+func AggregateAmortization(amortizationResults AmortizationResults) map[int]PaymentTable {
 	amortizations := amortizationResults.PaymentPlans
 
 	paymentMap := make(map[int]PaymentTable)
 
-	var paymentTables []PaymentTable
+	//var paymentTables []PaymentTable
 
 	for _, amortization := range amortizations {
 		monthlyPayments := amortization.MonthlyPayments
 		for i, monthlyPayment := range monthlyPayments {
 			paymentTable := paymentMap[i]
-			paymentMap[i] = updateMap(paymentTable, monthlyPayment)
+			paymentTabs := updateMap(paymentTable, monthlyPayment)
+			paymentMap[i] = *paymentTabs
 		}
 	}
 
-	for _, paymentTable := range paymentMap {
+	/*for _, paymentTable := range paymentMap {
 		paymentTables = append(paymentTables, paymentTable)
-	}
+	}*/
 
-	return paymentTables
+	return paymentMap
 
 }
 
-func updateMap(paymentTable PaymentTable, monthlyPayment MonthlyPayment) PaymentTable {
+func updateMap(paymentTable PaymentTable, monthlyPayment MonthlyPayment) *PaymentTable {
 
-	paymentTable.Balance += monthlyPayment.RemainingBalance
-	paymentTable.Month = monthlyPayment.Month
-	paymentTable.TotalInterest += monthlyPayment.Interest
-	paymentTable.TotalPaidAmount += (monthlyPayment.PrincipalPayment + monthlyPayment.Interest)
-	payment := Payment{
-		ID:               monthlyPayment.ID,
-		PaymentAmount:    (monthlyPayment.PrincipalPayment + monthlyPayment.Interest),
-		PrincipalPayment: monthlyPayment.PrincipalPayment}
-	paymentTable.Payment = append(paymentTable.Payment, payment)
+	paymentTabs := new(PaymentTable)
 
-	return paymentTable
+	paymentTabs.Balance = paymentTable.Balance + monthlyPayment.RemainingBalance
+	paymentTabs.Month = monthlyPayment.Month
+	paymentTabs.TotalInterest = paymentTable.TotalInterest + monthlyPayment.Interest
+	paymentTabs.TotalPaidAmount = paymentTable.TotalPaidAmount + (monthlyPayment.PrincipalPayment + monthlyPayment.Interest)
 
+	payments := paymentTable.Payment
+
+	payment := Payment{monthlyPayment.ID, monthlyPayment.PrincipalPayment + monthlyPayment.Interest, monthlyPayment.PrincipalPayment}
+
+	payments = append(payments, payment)
+
+	paymentTabs.Payment = payments
+
+	return paymentTabs
 }
 
 func AllAmortizations(trades []Tradeline) AmortizationResults {
@@ -69,8 +76,30 @@ func handleResults(input chan AmortizationResult, output chan AmortizationResult
 }
 
 func ConcurrentTradeline(trade Tradeline, output chan AmortizationResult) {
+	start := time.Now()
 	monthlyPayments := Amortization(trade)
+	elapsed := time.Since(start)
+	log.Printf("trade %s", trade.ID)
+	log.Printf("ConcurrentTradeline Binomial took %s", elapsed)
 	amortizationResult := AmortizationResult{
 		MonthlyPayments: monthlyPayments}
 	output <- amortizationResult
+}
+
+func GetAmortizations(trades []Tradeline) AmortizationResults {
+	var results AmortizationResults
+	for _, trade := range trades {
+		start := time.Now()
+
+		monthlyPayments := Amortization(trade)
+
+		elapsed := time.Since(start)
+		log.Printf("Binomial took %s", elapsed)
+
+		amortizationResult := AmortizationResult{
+			MonthlyPayments: monthlyPayments}
+		results.PaymentPlans = append(results.PaymentPlans, amortizationResult)
+	}
+
+	return results
 }

@@ -2,31 +2,31 @@ package calculator
 
 // Tradeline Input Array request for getting information on the debt accounts.
 type MonthlyPayment struct {
-	ID               string  `json:"id"`
-	Month            int     `json:"month"`
-	Interest         float64 `json:"interest"`
-	PrincipalPayment float64 `json:"principal_payment"`
-	RemainingBalance float64 `json:"remaining_balance"`
+	ID               string
+	Month            int
+	Interest         float64
+	PrincipalPayment float64
+	RemainingBalance float64
 }
 
 type AmortizationResults struct {
-	PaymentPlans []AmortizationResult `json:"payment_plan"`
+	PaymentPlans []AmortizationResult
 }
 
 type AmortizationResult struct {
-	MonthlyPayments []MonthlyPayment `json:"payments"`
+	MonthlyPayments []MonthlyPayment
 }
 
 type PaymentTable struct {
-	Month           int       `json:"month"`
-	TotalInterest   float64   `json:"total_interest"`
-	Balance         float64   `json:"remaining_balance"`
-	TotalPaidAmount float64   `json:"total_paid_amount"`
-	Payment         []Payment `json:"payments"`
+	Month           int
+	TotalInterest   float64
+	Balance         float64
+	TotalPaidAmount float64
+	Payment         []Payment
 }
 
 type Payment struct {
-	ID               string  `json:"id"`
-	PaymentAmount    float64 `json:"payment_amount"`
-	PrincipalPayment float64 `json:"principal_paid`
+	ID               string
+	PaymentAmount    float64
+	PrincipalPayment float64
 }

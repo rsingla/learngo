@@ -2,58 +2,84 @@ package calculator
 
 import (
 	"errors"
+	"log"
 	"math"
+	"time"
 )
 
 const Rate = 20.3
 
 func Calculate(tradelines []Tradeline) Results {
 
-	var Payoffs []PayoffResult
+	payoffs := make([]PayoffResult, len(tradelines))
 
-	for _, trade := range tradelines {
+	start := time.Now()
+
+	for i, trade := range tradelines {
 		interestRate := trade.InterestRate
 		if math.IsNaN(interestRate) || interestRate == 0.00 {
 			interestRate = Rate
 		}
 
-		payoff, err := tradelinePayment(interestRate, trade)
+		payoff := tradelinePayment(interestRate, trade)
 
 		payoffResult := PayoffResult{
 			Payoff: payoff,
-			Err:    err,
 		}
 
-		Payoffs = append(Payoffs, payoffResult)
+		payoffs[i] = payoffResult
 	}
+
+	elapsed := time.Since(start)
+	log.Printf("Binomial took %s", elapsed)
+
+	start = time.Now()
 
 	amortizations := AllAmortizations(tradelines)
 
+	elapsed = time.Since(start)
+	log.Printf("Binomial took %s", elapsed)
+
+	//fmt.Println(amortizations)
+
+	start = time.Now()
 	paymentTables := AggregateAmortization(amortizations)
 
+	elapsed = time.Since(start)
+	log.Printf("Binomial took %s", elapsed)
+
 	results := Results{
-		PayoffResult:  Payoffs,
+		PayoffResult: payoffs,
+		//Amortization:  amortizations,
 		PaymentTables: paymentTables,
 	}
 
 	return results
 }
 
-func tradelinePayment(rate float64, trade Tradeline) (Payoff, error) {
+func tradelinePayment(rate float64, trade Tradeline) Payoff {
 
+	payoffT := payoffTime(rate, trade)
+
+	var payoffResponse Payoff
+	isPaidOff := true
+	if math.IsNaN(payoffT) {
+		payoffT = 600.00
+		isPaidOff = false
+	}
+
+	payoffResponse = buildPayoffResponse(payoffT, trade, isPaidOff)
+
+	return payoffResponse
+}
+
+func payoffTime(rate float64, trade Tradeline) float64 {
 	balance := trade.Balance
 	minPayment := trade.MinimumPayment
 	yearlyRate := rate / (12 * 100)
-	time := (-1 * math.Log(1-((yearlyRate*balance)/minPayment))) / (math.Log(1 + yearlyRate))
-	var payoffResponse Payoff
-	var err error
-	if math.IsNaN(time) {
-		err = buildErrorResponse()
-	} else {
-		payoffResponse = buildPayoffResponse(time, trade)
-	}
+	payoffTime := (-1 * math.Log(1-((yearlyRate*balance)/minPayment))) / (math.Log(1 + yearlyRate))
 
-	return payoffResponse, err
+	return payoffTime
 }
 
 func buildErrorResponse() error {
@@ -62,21 +88,22 @@ func buildErrorResponse() error {
 	return err
 }
 
-func buildPayoffResponse(time float64, trade Tradeline) Payoff {
+func buildPayoffResponse(payoffT float64, trade Tradeline, isPaidOff bool) Payoff {
 
 	balance := trade.Balance
 	minPayment := trade.MinimumPayment
-	totalAmount := time * minPayment
-	interestAmount := (time * minPayment) - balance
-	_, days := math.Modf(time)
+	totalAmount := payoffT * minPayment
+	interestAmount := (payoffT * minPayment) - balance
+	_, days := math.Modf(payoffT)
 	lastPayment := days * minPayment
 
 	payoffResponse := Payoff{
 		ID:            trade.ID,
-		TimeInMonths:  math.Ceil(time),
+		TimeInMonths:  math.Ceil(payoffT),
 		TotalAmount:   float64(int(totalAmount*100)) / 100,
 		TotalInterest: float64(int(interestAmount*100)) / 100,
-		LastPayment:   float64(int(lastPayment*100)) / 100}
+		LastPayment:   float64(int(lastPayment*100)) / 100,
+		PaidOff:       isPaidOff}
 
 	return payoffResponse
 }
