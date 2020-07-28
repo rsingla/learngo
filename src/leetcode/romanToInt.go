@@ -1,7 +1,7 @@
 package leetcode
 
 func romanToInt(s string) int {
-
+	
 	var value int
 	lastval := 0
 
@@ -21,10 +21,7 @@ func romanToInt(s string) int {
 		} else {
 			value = value + roman[myVal]
 		}
-
 		lastval = roman[myVal]
 	}
-
 	return value
-
 }
