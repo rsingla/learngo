@@ -11,7 +11,7 @@ import (
 
 
 func main() {
-	h := &handler.health
+	h := &handler.health{}
 
 	http.HandleFunc("/foo", h.healthRespone)
 
