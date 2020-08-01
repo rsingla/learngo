@@ -1,4 +1,4 @@
-package main
+package code
 
 import (
 	"fmt"
@@ -9,17 +9,13 @@ type Point struct {
 	Y int
 }
 
-
 func (p *Point) moveTo(x int, y int) {
 	p.X += x
-	p.Y += y 
+	p.Y += y
 }
 
-
-func main() {
+func movePoint() {
 	p := Point{2, 4}
-
 	p.moveTo(5, 7)
-
 	fmt.Println(p.X, p.Y)
-}      
+}

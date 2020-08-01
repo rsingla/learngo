@@ -1,4 +1,4 @@
-package mean
+package code
 
 import "fmt"
 

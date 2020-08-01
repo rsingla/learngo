@@ -1,4 +1,4 @@
-package mathprog
+package code
 
 
 func AddComplex() complex64 {

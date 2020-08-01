@@ -1,13 +1,13 @@
-package main
+package code
 
 import (
 	"fmt"
-	"net/http"
 	"io/ioutil"
 	"log"
+	"net/http"
 )
 
-func main() {
+func httpRequest() {
 	fmt.Println("Hello world")
 
 	resp, err := http.Get("https://tianpan.co/notes/120-designing-uber")

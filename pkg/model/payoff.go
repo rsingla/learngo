@@ -1,4 +1,4 @@
-package calculator
+package model
 
 type Results struct {
 	PayoffResult  []PayoffResult       `json:"result"`

@@ -1,4 +1,4 @@
-package calculator
+package model
 
 // Tradeline Input Array request for getting information on the debt accounts.
 type Tradeline struct {
