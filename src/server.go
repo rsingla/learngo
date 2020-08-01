@@ -8,12 +8,12 @@ import (
 	"github.com/rsingla/learngo/pkg/handler"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
-}
+
 
 func main() {
-	http.HandleFunc("/foo", handler)
+	h := &handler.health
+
+	http.HandleFunc("/foo", h.healthRespone)
 
 	http.HandleFunc("/payoff", payoffHandler)
 
