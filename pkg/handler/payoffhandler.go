@@ -5,17 +5,18 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/rsingla/learngo/pkg/calculator"
+	"github.com/rsingla/learngo/pkg/finance"
+	"github.com/rsingla/learngo/pkg/model"
 )
 
 func PayoffHandler(w http.ResponseWriter, r *http.Request) {
 
-	var trades []calculator.Tradeline
-	err := json.NewDecoder(r.Body).Decode(&trades)
+	var debt model.Debt
+	err := json.NewDecoder(r.Body).Decode(&debt)
 
 	fmt.Println(err)
 
-	results := calculator.Calculate(trades)
+	results := finance.MinPayoff(debt)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(results)

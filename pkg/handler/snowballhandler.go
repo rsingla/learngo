@@ -6,11 +6,12 @@ import (
 	"net/http"
 
 	"github.com/rsingla/learngo/pkg/calculator"
+	"github.com/rsingla/learngo/pkg/model"
 )
 
 func SnowballHandler(w http.ResponseWriter, r *http.Request) {
 
-	var trades []calculator.Tradeline
+	var trades []model.Tradeline
 	err := json.NewDecoder(r.Body).Decode(&trades)
 
 	fmt.Println(err)
