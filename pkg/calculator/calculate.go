@@ -75,11 +75,11 @@ func tradelinePayment(rate float64, trade Tradeline) Payoff {
 	return payoffResponse
 }
 
-func payoffTime(rate float64, trade Tradeline) float64 {
+func payoffTime(rate float64, trade model.Tradeline) float64 {
 	balance := trade.Balance
 	minPayment := trade.MinimumPayment
 	yearlyRate := rate / (12 * 100)
-	payoffTime := (-1 * math.Log(1-((yearlyRate*balance)/minPayment))) / (math.Log(1 + yearlyRate))
+	payoffTime := (-1 * math.Log(1-((yearlyRate*float64(balance))/float64(minPayment)))) / (math.Log(1 + yearlyRate))
 
 	return payoffTime
 }
@@ -90,16 +90,16 @@ func buildErrorResponse() error {
 	return err
 }
 
-func buildPayoffResponse(payoffT float64, trade Tradeline, isPaidOff bool) Payoff {
+func buildPayoffResponse(payoffT float64, trade model.Tradeline, isPaidOff bool) model.Payoff {
 
 	balance := trade.Balance
 	minPayment := trade.MinimumPayment
-	totalAmount := payoffT * minPayment
-	interestAmount := (payoffT * minPayment) - balance
+	totalAmount := payoffT * float64(minPayment)
+	interestAmount := (payoffT * float64(minPayment)) - float64(balance)
 	_, days := math.Modf(payoffT)
-	lastPayment := days * minPayment
+	lastPayment := days * float64(minPayment)
 
-	payoffResponse := Payoff{
+	payoffResponse := model.Payoff{
 		ID:            trade.ID,
 		TimeInMonths:  math.Ceil(payoffT),
 		TotalAmount:   float64(int(totalAmount*100)) / 100,

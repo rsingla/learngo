@@ -43,7 +43,7 @@ func updateMap(paymentTable model.PaymentTable, monthlyPayment model.MonthlyPaym
 
 	payments := paymentTable.Payment
 
-	payment := Payment{monthlyPayment.ID, monthlyPayment.PrincipalPayment + monthlyPayment.Interest, monthlyPayment.PrincipalPayment}
+	payment := model.Payment{monthlyPayment.ID, monthlyPayment.PrincipalPayment + monthlyPayment.Interest, monthlyPayment.PrincipalPayment}
 
 	payments = append(payments, payment)
 
@@ -53,8 +53,8 @@ func updateMap(paymentTable model.PaymentTable, monthlyPayment model.MonthlyPaym
 }
 
 func AllAmortizations(trades []model.Tradeline) model.AmortizationResults {
-	output := make(chan AmortizationResults)
-	input := make(chan AmortizationResult)
+	output := make(chan model.AmortizationResults)
+	input := make(chan model.AmortizationResult)
 	var wg sync.WaitGroup
 	go handleResults(input, output, &wg)
 	defer close(output)
@@ -69,7 +69,7 @@ func AllAmortizations(trades []model.Tradeline) model.AmortizationResults {
 }
 
 func handleResults(input chan model.AmortizationResult, output chan model.AmortizationResults, wg *sync.WaitGroup) {
-	var results AmortizationResults
+	var results model.AmortizationResults
 	for result := range input {
 		results.PaymentPlans = append(results.PaymentPlans, result)
 		wg.Done()
@@ -83,13 +83,13 @@ func ConcurrentTradeline(trade model.Tradeline, output chan model.AmortizationRe
 	elapsed := time.Since(start)
 	log.Printf("trade %s", trade.ID)
 	log.Printf("ConcurrentTradeline Binomial took %s", elapsed)
-	amortizationResult := AmortizationResult{
+	amortizationResult := model.AmortizationResult{
 		MonthlyPayments: monthlyPayments}
 	output <- amortizationResult
 }
 
 func GetAmortizations(trades []model.Tradeline) model.AmortizationResults {
-	var results AmortizationResults
+	var results model.AmortizationResults
 	for _, trade := range trades {
 		start := time.Now()
 
