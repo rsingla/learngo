@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func snowballHandler(w http.ResponseWriter, r *http.Request) {
+func SnowballHandler(w http.ResponseWriter, r *http.Request) {
 
 	var trades []calculator.Tradeline
 	err := json.NewDecoder(r.Body).Decode(&trades)

@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func payoffHandler(w http.ResponseWriter, r *http.Request) {
+func PayoffHandler(w http.ResponseWriter, r *http.Request) {
 
 	var trades []calculator.Tradeline
 	err := json.NewDecoder(r.Body).Decode(&trades)

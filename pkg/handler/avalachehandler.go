@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func avalancheHandler(w http.ResponseWriter, r *http.Request) {
+func AvalancheHandler(w http.ResponseWriter, r *http.Request) {
 
 	var trades []calculator.Tradeline
 	err := json.NewDecoder(r.Body).Decode(&trades)

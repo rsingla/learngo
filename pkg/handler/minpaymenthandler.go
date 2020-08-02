@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func minPaymentHandler(w http.ResponseWriter, r *http.Request) {
+func MinPaymentHandler(w http.ResponseWriter, r *http.Request) {
 
 	var trades []calculator.Tradeline
 	err := json.NewDecoder(r.Body).Decode(&trades)
