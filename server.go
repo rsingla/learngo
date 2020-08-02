@@ -1,4 +1,4 @@
-package main
+package learngo
 
 import (
 	"fmt"
@@ -8,14 +8,11 @@ import (
 	"github.com/rsingla/learngo/pkg/handler"
 )
 
-
-
 func main() {
-	h := &handler.health{}
 
-	http.HandleFunc("/foo", h.healthRespone)
+	http.HandleFunc("/foo", handler.healthRespone)
 
-	http.HandleFunc("/payoff", payoffHandler)
+	http.HandleFunc("/payoff", handler.payoffHandler)
 
 	http.HandleFunc("/bar", func(w http.ResponseWriter, r *http.Request) {
 
