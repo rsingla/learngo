@@ -11,7 +11,7 @@ import (
 
 func MinPayoffHandler(w http.ResponseWriter, r *http.Request) {
 
-	var debt []model.Debt
+	var debt model.Debt
 	err := json.NewDecoder(r.Body).Decode(&debt)
 
 	fmt.Println(err)
