@@ -47,7 +47,7 @@ func updateMap(paymentTable model.PaymentTable, monthlyPay model.MonthlyPayment)
 	payment.PaymentAmount = (monthlyPay.PrincipalPayment + monthlyPay.Interest)
 	payment.PrincipalPayment = monthlyPay.PrincipalPayment
 
-	payments = append(payments, payment)
+	payments = append(payments, *payment)
 
 	paymentTabs.Payment = payments
 
