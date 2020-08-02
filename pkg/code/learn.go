@@ -8,7 +8,7 @@ import (
 
 var i int = 27
 
-func main() {
+func runMathProg() {
 	fmt.Printf("%v \n", i)
 	var i int = 47
 	fmt.Printf("%v \n", i)

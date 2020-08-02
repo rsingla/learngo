@@ -1,10 +1,11 @@
 package handler
 
 import (
-	"calculator"
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/rsingla/learngo/pkg/calculator"
 )
 
 func AvalancheHandler(w http.ResponseWriter, r *http.Request) {
