@@ -6,6 +6,7 @@ import (
 	"github.com/rsingla/learngo/pkg/model"
 )
 
-func (d *model.Debt) MinPayoff() {
-	log.Printf(d)
+func MinPayoff(d model.Debt) {
+	log.Println(d.MonthlyBudget)
+	log.Println(d.Tradelines)
 }
