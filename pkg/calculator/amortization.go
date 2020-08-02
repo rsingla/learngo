@@ -4,12 +4,14 @@ import (
 	"log"
 	"sync"
 	"time"
+
+	"github.com/rsingla/learngo/pkg/model"
 )
 
-func AggregateAmortization(amortizationResults AmortizationResults) map[int]PaymentTable {
+func AggregateAmortization(amortizationResults model.AmortizationResults) map[int]model.PaymentTable {
 	amortizations := amortizationResults.PaymentPlans
 
-	paymentMap := make(map[int]PaymentTable)
+	paymentMap := make(map[int]model.PaymentTable)
 
 	//var paymentTables []PaymentTable
 
@@ -30,9 +32,9 @@ func AggregateAmortization(amortizationResults AmortizationResults) map[int]Paym
 
 }
 
-func updateMap(paymentTable PaymentTable, monthlyPayment MonthlyPayment) *PaymentTable {
+func updateMap(paymentTable model.PaymentTable, monthlyPayment model.MonthlyPayment) *model.PaymentTable {
 
-	paymentTabs := new(PaymentTable)
+	paymentTabs := new(model.PaymentTable)
 
 	paymentTabs.Balance = paymentTable.Balance + monthlyPayment.RemainingBalance
 	paymentTabs.Month = monthlyPayment.Month
@@ -50,7 +52,7 @@ func updateMap(paymentTable PaymentTable, monthlyPayment MonthlyPayment) *Paymen
 	return paymentTabs
 }
 
-func AllAmortizations(trades []Tradeline) AmortizationResults {
+func AllAmortizations(trades []model.Tradeline) model.AmortizationResults {
 	output := make(chan AmortizationResults)
 	input := make(chan AmortizationResult)
 	var wg sync.WaitGroup
@@ -66,7 +68,7 @@ func AllAmortizations(trades []Tradeline) AmortizationResults {
 	return <-output
 }
 
-func handleResults(input chan AmortizationResult, output chan AmortizationResults, wg *sync.WaitGroup) {
+func handleResults(input chan model.AmortizationResult, output chan model.AmortizationResults, wg *sync.WaitGroup) {
 	var results AmortizationResults
 	for result := range input {
 		results.PaymentPlans = append(results.PaymentPlans, result)
@@ -75,7 +77,7 @@ func handleResults(input chan AmortizationResult, output chan AmortizationResult
 	output <- results
 }
 
-func ConcurrentTradeline(trade Tradeline, output chan AmortizationResult) {
+func ConcurrentTradeline(trade model.Tradeline, output chan model.AmortizationResult) {
 	start := time.Now()
 	monthlyPayments := Amortization(trade)
 	elapsed := time.Since(start)
@@ -86,7 +88,7 @@ func ConcurrentTradeline(trade Tradeline, output chan AmortizationResult) {
 	output <- amortizationResult
 }
 
-func GetAmortizations(trades []Tradeline) AmortizationResults {
+func GetAmortizations(trades []model.Tradeline) model.AmortizationResults {
 	var results AmortizationResults
 	for _, trade := range trades {
 		start := time.Now()
@@ -96,7 +98,7 @@ func GetAmortizations(trades []Tradeline) AmortizationResults {
 		elapsed := time.Since(start)
 		log.Printf("Binomial took %s", elapsed)
 
-		amortizationResult := AmortizationResult{
+		amortizationResult := model.AmortizationResult{
 			MonthlyPayments: monthlyPayments}
 		results.PaymentPlans = append(results.PaymentPlans, amortizationResult)
 	}

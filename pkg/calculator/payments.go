@@ -4,12 +4,14 @@ import (
 	"log"
 	"math"
 	"time"
+
+	"github.com/rsingla/learngo/pkg/model"
 )
 
 const daysInYear = 365
 const monthlyDays = 30
 
-func Amortization(trade Tradeline) []MonthlyPayment {
+func Amortization(trade model.Tradeline) []model.MonthlyPayment {
 
 	balance := trade.Balance
 	minimumPayment := trade.MinimumPayment
@@ -29,7 +31,7 @@ func Amortization(trade Tradeline) []MonthlyPayment {
 
 	normalizedRate := interestRate / 100
 
-	monthlyPayments := make([]MonthlyPayment, months)
+	monthlyPayments := make([]model.MonthlyPayment, months)
 
 	month := 0
 
@@ -63,8 +65,8 @@ func Amortization(trade Tradeline) []MonthlyPayment {
 	return monthlyPayments
 }
 
-func buildMonthlyPayment(interest float64, principalPayment float64, balance float64, trade Tradeline, month int) *MonthlyPayment {
-	monthlyPayment := new(MonthlyPayment)
+func buildMonthlyPayment(interest float64, principalPayment float64, balance float64, trade Tradeline, month int) *model.MonthlyPayment {
+	monthlyPayment := new(model.MonthlyPayment)
 	monthlyPayment.ID = trade.ID
 	monthlyPayment.Month = month
 	monthlyPayment.PrincipalPayment = principalPayment

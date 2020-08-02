@@ -5,13 +5,15 @@ import (
 	"log"
 	"math"
 	"time"
+
+	"github.com/rsingla/learngo/pkg/model"
 )
 
 const Rate = 20.3
 
-func Calculate(tradelines []Tradeline) Results {
+func Calculate(tradelines []model.Tradeline) Results {
 
-	payoffs := make([]PayoffResult, len(tradelines))
+	payoffs := make([]model.PayoffResult, len(tradelines))
 
 	start := time.Now()
 
@@ -23,7 +25,7 @@ func Calculate(tradelines []Tradeline) Results {
 
 		payoff := tradelinePayment(interestRate, trade)
 
-		payoffResult := PayoffResult{
+		payoffResult := model.PayoffResult{
 			Payoff: payoff,
 		}
 
@@ -61,7 +63,7 @@ func tradelinePayment(rate float64, trade Tradeline) Payoff {
 
 	payoffT := payoffTime(rate, trade)
 
-	var payoffResponse Payoff
+	var payoffResponse model.Payoff
 	isPaidOff := true
 	if math.IsNaN(payoffT) {
 		payoffT = 600.00
