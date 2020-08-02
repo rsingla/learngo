@@ -9,14 +9,14 @@ import (
 	"github.com/rsingla/learngo/pkg/model"
 )
 
-func MinPaymentHandler(w http.ResponseWriter, r *http.Request) {
+func MinPayoffHandler(w http.ResponseWriter, r *http.Request) {
 
-	var trades []model.Tradeline
-	err := json.NewDecoder(r.Body).Decode(&trades)
+	var debt []model.Debt
+	err := json.NewDecoder(r.Body).Decode(&debt)
 
 	fmt.Println(err)
 
-	results := finance.Calculate(trades)
+	results := finance.MinPayoff(debt)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(results)
