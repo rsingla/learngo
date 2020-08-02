@@ -11,7 +11,7 @@ import (
 
 const Rate = 20.3
 
-func Calculate(tradelines []model.Tradeline) Results {
+func Calculate(tradelines []model.Tradeline) model.Results {
 
 	payoffs := make([]model.PayoffResult, len(tradelines))
 
@@ -50,7 +50,7 @@ func Calculate(tradelines []model.Tradeline) Results {
 	elapsed = time.Since(start)
 	log.Printf("Binomial took %s", elapsed)
 
-	results := Results{
+	results := model.Results{
 		PayoffResult: payoffs,
 		//Amortization:  amortizations,
 		PaymentTables: paymentTables,
@@ -59,7 +59,7 @@ func Calculate(tradelines []model.Tradeline) Results {
 	return results
 }
 
-func tradelinePayment(rate float64, trade Tradeline) Payoff {
+func tradelinePayment(rate float64, trade model.Tradeline) model.Payoff {
 
 	payoffT := payoffTime(rate, trade)
 

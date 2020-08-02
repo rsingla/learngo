@@ -39,17 +39,19 @@ func Amortization(trade model.Tradeline) []model.MonthlyPayment {
 
 	start := time.Now()
 
-	for balance > 0 {
-		dailyBalance := dailyPeriodicRate * balance
+	bal := float64(balance)
+	minPayment := float64(minimumPayment)
+	for bal > 0 {
+		dailyBalance := dailyPeriodicRate * bal
 		interest := dailyBalance * monthlyDays
 		principalPayment := 0.00
-		if minimumPayment > balance {
-			principalPayment = balance
+		if minPayment > bal {
+			principalPayment = bal
 		} else {
-			principalPayment = minimumPayment - interest
+			principalPayment = minPayment - interest
 		}
-		balance = balance - principalPayment
-		monthlyPayment := buildMonthlyPayment(interest, principalPayment, balance, trade, month)
+		bal = bal - principalPayment
+		monthlyPayment := buildMonthlyPayment(interest, principalPayment, bal, trade, month)
 		monthlyPayments[month] = *monthlyPayment
 
 		month = month + 1
@@ -65,7 +67,7 @@ func Amortization(trade model.Tradeline) []model.MonthlyPayment {
 	return monthlyPayments
 }
 
-func buildMonthlyPayment(interest float64, principalPayment float64, balance float64, trade Tradeline, month int) *model.MonthlyPayment {
+func buildMonthlyPayment(interest float64, principalPayment float64, balance float64, trade model.Tradeline, month int) *model.MonthlyPayment {
 	monthlyPayment := new(model.MonthlyPayment)
 	monthlyPayment.ID = trade.ID
 	monthlyPayment.Month = month

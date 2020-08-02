@@ -32,18 +32,20 @@ func AggregateAmortization(amortizationResults model.AmortizationResults) map[in
 
 }
 
-func updateMap(paymentTable model.PaymentTable, monthlyPayment model.MonthlyPayment) *model.PaymentTable {
+func updateMap(paymentTable model.PaymentTable, monthlyPay model.MonthlyPayment) *model.PaymentTable {
 
 	paymentTabs := new(model.PaymentTable)
 
-	paymentTabs.Balance = paymentTable.Balance + monthlyPayment.RemainingBalance
-	paymentTabs.Month = monthlyPayment.Month
-	paymentTabs.TotalInterest = paymentTable.TotalInterest + monthlyPayment.Interest
-	paymentTabs.TotalPaidAmount = paymentTable.TotalPaidAmount + (monthlyPayment.PrincipalPayment + monthlyPayment.Interest)
+	paymentTabs.Balance = paymentTable.Balance + monthlyPay.RemainingBalance
+	paymentTabs.Month = monthlyPay.Month
+	paymentTabs.TotalInterest = paymentTable.TotalInterest + monthlyPay.Interest
+	paymentTabs.TotalPaidAmount = paymentTable.TotalPaidAmount + (monthlyPay.PrincipalPayment + monthlyPay.Interest)
 
 	payments := paymentTable.Payment
-
-	payment := model.Payment{monthlyPayment.ID, monthlyPayment.PrincipalPayment + monthlyPayment.Interest, monthlyPayment.PrincipalPayment}
+	payment := new(model.Payment)
+	payment.ID = monthlyPay.ID
+	payment.PaymentAmount = (monthlyPay.PrincipalPayment + monthlyPay.Interest)
+	payment.PrincipalPayment = monthlyPay.PrincipalPayment
 
 	payments = append(payments, payment)
 
