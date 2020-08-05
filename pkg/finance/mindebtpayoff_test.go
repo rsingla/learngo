@@ -120,15 +120,14 @@ func TestMinPayoff(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want string
 	}{
-		{"Test First", args{model.Debt{MonthlyBudget: 5000, Tradelines: trades}}, "API Called"},
+		{"Test First", args{model.Debt{MonthlyBudget: 5000, Tradelines: trades}}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := MinPayoff(tt.args.d); got != tt.want {
-				t.Errorf("MinPayoff() = %v, want %v", got, tt.want)
+			if got := MinPayoff(tt.args.d); got != nil {
+				t.Errorf("MinPayoff() = %v", got)
 			}
 		})
 	}
@@ -155,15 +154,14 @@ func TestMinPayoffWith5Tradelines(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want string
 	}{
-		{"Test 5 Tradelines", args{model.Debt{MonthlyBudget: 5000, Tradelines: trades}}, "API Called"},
+		{"Test 5 Tradelines", args{model.Debt{MonthlyBudget: 5000, Tradelines: trades}}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := MinPayoff(tt.args.d); got != tt.want {
-				t.Errorf("MinPayoff() = %v, want %v", got, tt.want)
+			if got := MinPayoff(tt.args.d); got == nil {
+				t.Errorf("MinPayoff() = %v", got)
 			}
 		})
 	}
@@ -177,19 +175,20 @@ func Test_minimumPayment(t *testing.T) {
 		month        int
 		budget       int
 		balance      float64
+		id           string
 	}
 	tests := []struct {
 		name string
 		args args
 	}{
-		{"Test First", args{dailyRate: 0.000273972602739726, monthly_days: 31, minPayment: 1100.00, month: 2, budget: 1500, balance: 64367}},
-		{"Test Second", args{dailyRate: 0.000273972602739726, monthly_days: 30, minPayment: 399.00, month: 2, budget: 1000, balance: 12000}},
-		{"Test Third", args{dailyRate: 0.000273972602739726, monthly_days: 29, minPayment: 300.00, month: 3, budget: 1800, balance: 11121}},
-		{"Test Fourth", args{dailyRate: 0.000273972602739726, monthly_days: 28, minPayment: 299.00, month: 6, budget: 1200, balance: 12100}},
-		{"Test Fifth", args{dailyRate: 0.000273972602739726, monthly_days: 30, minPayment: 300.00, month: 10, budget: 1600, balance: 13000}}}
+		{"Test First", args{dailyRate: 0.000273972602739726, monthly_days: 31, minPayment: 1100.00, month: 2, budget: 1500, balance: 64367, id: "1"}},
+		{"Test Second", args{dailyRate: 0.000273972602739726, monthly_days: 30, minPayment: 399.00, month: 2, budget: 1000, balance: 12000, id: "2"}},
+		{"Test Third", args{dailyRate: 0.000273972602739726, monthly_days: 29, minPayment: 300.00, month: 3, budget: 1800, balance: 11121, id: "3"}},
+		{"Test Fourth", args{dailyRate: 0.000273972602739726, monthly_days: 28, minPayment: 299.00, month: 6, budget: 1200, balance: 12100, id: "4"}},
+		{"Test Fifth", args{dailyRate: 0.000273972602739726, monthly_days: 30, minPayment: 300.00, month: 10, budget: 1600, balance: 13000, id: "5"}}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			minimumPayment(tt.args.dailyRate, tt.args.monthly_days, tt.args.minPayment, tt.args.month, tt.args.budget, tt.args.balance)
+			minimumPayment(tt.args.dailyRate, tt.args.monthly_days, tt.args.minPayment, tt.args.month, tt.args.budget, tt.args.balance, tt.args.id)
 		})
 	}
 }

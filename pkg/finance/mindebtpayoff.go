@@ -8,7 +8,7 @@ import (
 	"github.com/rsingla/learngo/pkg/model"
 )
 
-func MinPayoff(d model.Debt) string {
+func MinPayoff(d model.Debt) map[int][]model.MonthlyPayment {
 	budget := d.MonthlyBudget
 	trades := d.Tradelines
 	var month int = 0
@@ -20,6 +20,8 @@ func MinPayoff(d model.Debt) string {
 	}
 
 	zeroMap := make(map[string]float64)
+
+	amortization := make(map[int][]model.MonthlyPayment)
 
 	for month <= 600 {
 
@@ -35,15 +37,19 @@ func MinPayoff(d model.Debt) string {
 			}
 
 			dailyRate := trade.InterestRate / float64(days*100)
-			minPayment := trade.MinimumPayment
+			minPayment := float64(trade.MinimumPayment)
 
-			bal := minimumPayment(dailyRate, monthly_days, minPayment, month, budget, balance)
+			monthlyPay := minimumPayment(dailyRate, monthly_days, minPayment, month, budget, balance, trade.ID)
 
-			balMap[trade.ID] = bal
+			balMap[trade.ID] = monthlyPay.RemainingBalance
 
-			fmt.Println(bal, trade, balMap)
+			pays := amortization[month]
+			pays = append(pays, monthlyPay)
+			amortization[month] = pays
 
-			if bal == 0 {
+			//fmt.Println(monthlyPay, trade, balMap)
+
+			if balMap[trade.ID] == 0 {
 				zeroMap[trade.ID] = 0.00
 			}
 		}
@@ -52,17 +58,16 @@ func MinPayoff(d model.Debt) string {
 			break
 		}
 
-		fmt.Println("Total Time : ", month)
 		month++
 	}
 
-	fmt.Println("Total Time : ", month)
+	fmt.Println("Total Time : ", month, amortization)
 
-	return "API Called"
+	return amortization
 }
 
 //A = P * (r(1+r)^n)/ ((1+r)^n - 1)
-func minimumPayment(dailyRate float64, monthly_days int, minPayment float64, month int, budget int, balance float64) float64 {
+func minimumPayment(dailyRate float64, monthly_days int, minPayment float64, month int, budget int, balance float64, id string) model.MonthlyPayment {
 
 	interestPayment := balance * dailyRate * float64(monthly_days)
 	principalPayment := minPayment - interestPayment
@@ -73,9 +78,11 @@ func minimumPayment(dailyRate float64, monthly_days int, minPayment float64, mon
 
 	balance = balance - principalPayment
 
-	fmt.Println(interestPayment, principalPayment, balance)
+	monthlyPay := model.MonthlyPayment{ID: id, Month: month, Interest: interestPayment, PrincipalPayment: principalPayment, RemainingBalance: balance}
 
-	return balance
+	fmt.Println(monthlyPay)
+
+	return monthlyPay
 }
 
 func currMonth() time.Month {
