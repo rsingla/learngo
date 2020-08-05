@@ -9,7 +9,7 @@ import (
 	"github.com/rsingla/learngo/pkg/model"
 )
 
-func MinPayoff(d model.Debt) map[string][]model.MonthlyPayment {
+func MinPayoff(d model.Debt) []model.Payment {
 	budget := d.MonthlyBudget
 	trades := d.Tradelines
 	var month int = 0
