@@ -3,6 +3,7 @@ package finance
 import (
 	"fmt"
 	"math"
+	"strconv"
 	"time"
 
 	"github.com/rsingla/learngo/pkg/model"
@@ -43,7 +44,8 @@ func MinPayoff(d model.Debt) map[string][]model.MonthlyPayment {
 			monthlyPay := minimumPayment(dailyRate, monthly_days, minPayment, month, budget, balance, trade.ID)
 
 			balMap[trade.ID] = monthlyPay.RemainingBalance
-			monthDate := string(myDate.Year()) + string(myDate.Month())
+			monthDate := strconv.Itoa(myDate.Year()) + " " + myDate.Month().String()
+			
 			pays := amortization[monthDate]
 			pays = append(pays, monthlyPay)
 			amortization[monthDate] = pays
