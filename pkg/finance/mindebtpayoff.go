@@ -22,7 +22,7 @@ func MinPayoff(d model.Debt) []model.Payment {
 
 	zeroMap := make(map[string]float64)
 
-	amortization := make([]model.Payment)
+	amortization := []model.Payment{}
 
 	for month <= 600 {
 
