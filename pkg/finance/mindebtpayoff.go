@@ -8,7 +8,7 @@ import (
 	"github.com/rsingla/learngo/pkg/model"
 )
 
-func MinPayoff(d model.Debt) map[int][]model.MonthlyPayment {
+func MinPayoff(d model.Debt) map[string][]model.MonthlyPayment {
 	budget := d.MonthlyBudget
 	trades := d.Tradelines
 	var month int = 0
@@ -21,7 +21,7 @@ func MinPayoff(d model.Debt) map[int][]model.MonthlyPayment {
 
 	zeroMap := make(map[string]float64)
 
-	amortization := make(map[int][]model.MonthlyPayment)
+	amortization := make(map[string][]model.MonthlyPayment)
 
 	for month <= 600 {
 
@@ -43,7 +43,7 @@ func MinPayoff(d model.Debt) map[int][]model.MonthlyPayment {
 			monthlyPay := minimumPayment(dailyRate, monthly_days, minPayment, month, budget, balance, trade.ID)
 
 			balMap[trade.ID] = monthlyPay.RemainingBalance
-			monthDate := myDate.Year().String() + myDate.Month().String()
+			monthDate := string(myDate.Year()) + string(myDate.Month())
 			pays := amortization[monthDate]
 			pays = append(pays, monthlyPay)
 			amortization[monthDate] = pays
@@ -103,7 +103,7 @@ func daysInAfterMonth(monthsAfter int) int {
 	return int(diff)
 }
 
-func addMonthsToGetYear(monthsAfter int) time {
+func addMonthsToGetYear(monthsAfter int) time.Time {
 	myDate := time.Now().AddDate(0, monthsAfter, 0)
 	return myDate
 }

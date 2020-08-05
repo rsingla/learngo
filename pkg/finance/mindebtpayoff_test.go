@@ -28,31 +28,6 @@ func Test_daysInYear(t *testing.T) {
 	}
 }
 
-func Test_daysInYearAfterMonths(t *testing.T) {
-	type args struct {
-		monthsAfter int
-	}
-	tests := []struct {
-		name string
-		args args
-		want int
-	}{
-		{"Test DaysInYear 2020", args{1}, 2020},
-		{"Test DaysInYear 2021", args{2}, 2020},
-		{"Test DaysInYear 2022", args{3}, 2020},
-		{"Test DaysInYear 2023", args{4}, 2020},
-		{"Test DaysInYear 2024", args{5}, 2021},
-		{"Test DaysInYear 2024", args{6}, 2021},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := addMonthsToGetYear(tt.args.monthsAfter); got != tt.want {
-				t.Errorf("addMonthsToGetYear() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func Test_daysIn(t *testing.T) {
 	type args struct {
 		monthsAfter int
