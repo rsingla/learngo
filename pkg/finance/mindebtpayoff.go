@@ -25,7 +25,8 @@ func MinPayoff(d model.Debt) map[int][]model.MonthlyPayment {
 
 	for month <= 600 {
 
-		year := addMonthsToGetYear(month)
+		myDate := addMonthsToGetYear(month)
+		year := myDate.Year()
 		monthly_days := daysIn(month, year)
 		days := daysInAfterMonth(month)
 
@@ -42,10 +43,10 @@ func MinPayoff(d model.Debt) map[int][]model.MonthlyPayment {
 			monthlyPay := minimumPayment(dailyRate, monthly_days, minPayment, month, budget, balance, trade.ID)
 
 			balMap[trade.ID] = monthlyPay.RemainingBalance
-
-			pays := amortization[month]
+			monthDate := myDate.Year().String() + myDate.Month().String()
+			pays := amortization[monthDate]
 			pays = append(pays, monthlyPay)
-			amortization[month] = pays
+			amortization[monthDate] = pays
 
 			//fmt.Println(monthlyPay, trade, balMap)
 
@@ -102,10 +103,9 @@ func daysInAfterMonth(monthsAfter int) int {
 	return int(diff)
 }
 
-func addMonthsToGetYear(monthsAfter int) int {
+func addMonthsToGetYear(monthsAfter int) time {
 	myDate := time.Now().AddDate(0, monthsAfter, 0)
-	year := myDate.Year()
-	return year
+	return myDate
 }
 
 func daysInYear(year int) int {
