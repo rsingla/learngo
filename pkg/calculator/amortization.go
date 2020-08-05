@@ -43,9 +43,8 @@ func updateMap(paymentTable model.PaymentTable, monthlyPay model.MonthlyPayment)
 
 	payments := paymentTable.Payment
 	payment := new(model.Payment)
-	payment.ID = monthlyPay.ID
-	payment.PaymentAmount = (monthlyPay.PrincipalPayment + monthlyPay.Interest)
-	payment.PrincipalPayment = monthlyPay.PrincipalPayment
+	payment.TotalPayment = (monthlyPay.PrincipalPayment + monthlyPay.Interest)
+	payment.TotalPrincipalPayment = monthlyPay.PrincipalPayment
 
 	payments = append(payments, *payment)
 
