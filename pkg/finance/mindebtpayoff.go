@@ -22,7 +22,7 @@ func MinPayoff(d model.Debt) map[string][]model.MonthlyPayment {
 
 	zeroMap := make(map[string]float64)
 
-	amortization := make(map[string][]model.MonthlyPayment)
+	amortization := make([]model.Payment)
 
 	for month <= 600 {
 
@@ -30,6 +30,13 @@ func MinPayoff(d model.Debt) map[string][]model.MonthlyPayment {
 		year := myDate.Year()
 		monthly_days := daysIn(month, year)
 		days := daysInAfterMonth(month)
+
+		pays := []model.MonthlyPayment{}
+		monthDate := strconv.Itoa(myDate.Year()) + " " + myDate.Month().String()
+
+		totalInterest := 0.0
+		totalPrincipal := 0.0
+		totalPayment := 0.0
 
 		for _, trade := range trades {
 			balance := balMap[trade.ID]
@@ -44,18 +51,26 @@ func MinPayoff(d model.Debt) map[string][]model.MonthlyPayment {
 			monthlyPay := minimumPayment(dailyRate, monthly_days, minPayment, month, budget, balance, trade.ID)
 
 			balMap[trade.ID] = monthlyPay.RemainingBalance
-			monthDate := strconv.Itoa(myDate.Year()) + " " + myDate.Month().String()
-			
-			pays := amortization[monthDate]
-			pays = append(pays, monthlyPay)
-			amortization[monthDate] = pays
 
-			//fmt.Println(monthlyPay, trade, balMap)
+			pays = append(pays, monthlyPay)
 
 			if balMap[trade.ID] == 0 {
 				zeroMap[trade.ID] = 0.00
 			}
+
+			totalInterest += monthlyPay.Interest
+			totalPrincipal += monthlyPay.PrincipalPayment
+			totalPayment += (monthlyPay.Interest + monthlyPay.PrincipalPayment)
 		}
+
+		payment := model.Payment{
+			Month:                 monthDate,
+			TotalPayment:          totalPayment,
+			TotalPrincipalPayment: totalPrincipal,
+			TotalInterest:         totalInterest,
+			MonthlyPayments:       pays}
+
+		amortization = append(amortization, payment)
 
 		if len(zeroMap) == len(balMap) {
 			break

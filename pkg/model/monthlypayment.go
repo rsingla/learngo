@@ -26,7 +26,9 @@ type PaymentTable struct {
 }
 
 type Payment struct {
-	ID               string
-	PaymentAmount    float64
-	PrincipalPayment float64
+	Month                 string
+	TotalPayment          float64
+	TotalPrincipalPayment float64
+	TotalInterest         float64
+	MonthlyPayments       []MonthlyPayment
 }
